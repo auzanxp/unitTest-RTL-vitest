@@ -38,4 +38,35 @@ describe('App Component', () => {
 
         expect(inputEmail).toBeInvalid()
     })
+
+    test('when user not register, should show error message', async () => {
+        render(<App />)
+
+        const inputEmail = screen.getByRole('textbox')
+        const inputPassword = screen.getByPlaceholderText(/enter password/i)
+        const buttonElement = screen.getByRole('button', { name: /login/i })
+
+        await userEvent.type(inputEmail, 'kamu@mail.com')
+        await userEvent.type(inputPassword, '123')
+        await userEvent.click(buttonElement)
+
+        const spanElement = screen.getByText(/user not register/i)
+
+        expect(spanElement).toBeInTheDocument()
+    })
+
+    test('when login succes, should not show error message', async () => {
+        render(<App />)
+
+        const inputEmail = screen.getByRole('textbox')
+        const inputPassword = screen.getByPlaceholderText(/enter password/i)
+        const buttonElement = screen.getByRole('button', { name: /login/i })
+
+        await userEvent.type(inputEmail, 'test@mail.com')
+        await userEvent.type(inputPassword, '123')
+        await userEvent.click(buttonElement)
+
+        const spanElement = screen.getByRole('alert')
+        expect(spanElement).toHaveTextContent('')
+    })
 })
